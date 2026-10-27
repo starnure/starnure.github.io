@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Account - Starnure</title>
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="/style.css">
+<style>
+  .who { display: flex; align-items: center; gap: 14px; margin-bottom: 32px; }
+  .who img { width: 48px; height: 48px; border-radius: 50%; }
+  .who b { display: block; font-size: 18px; }
+  .who button { margin-left: auto; }
+  .lic { padding: 24px; margin-bottom: 16px; }
+  .lic .head { margin-bottom: 12px; }
+  .lic code { display: inline-block; font-size: 17px; padding: 6px 12px; user-select: all; }
+  .lic .meta { color: var(--muted); font-size: 14px; margin: 12px 0 16px; }
+  .row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+  .note { color: var(--muted); font-size: 15px; }
+  .error { color: #FF8A8A; }
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="/">STARNURE</a>
+    <nav>
+      <a href="/#plugins">Plugins</a>
+      <a href="/shop/">Shop</a>
+      <a href="/#faq">FAQ</a>
+      <a href="/account/">Account</a>
+    </nav>
+  </div>
+</header>
+
+<section>
+  <div class="wrap narrow">
+    <h2>Account</h2>
+    <div id="app"><p class="note">Loading...</p></div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span>&copy; 2026 Starnure</span>
+    <span>Questions: <a href="mailto:support@starnure.dev">support@starnure.dev</a></span>
+  </div>
+</footer>
+
+<script src="/api.js"></script>
+<script>
+  const app = document.getElementById("app");
+
+  function license(l) {
+    const date = new Date(l.created_at * 1000).toLocaleDateString();
+    return `
+      <div class="card lic">
+        <div class="head"><h3>${esc(l.name)}</h3>${l.revoked ? '<span class="badge lilac">Revoked</span>' : ""}</div>
+        <div class="row">
+          <code>${esc(l.key)}</code>
+          <button class="btn ghost" data-copy="${esc(l.key)}">Copy</button>
+          ${l.download_url ? `<a class="btn" href="${esc(l.download_url)}">Download</a>` : ""}
+        </div>
+        <p class="meta">Bought ${esc(date)} &middot; active on ${l.servers} of ${l.max_instances} servers</p>
+      </div>`;
+  }
+
+  async function main() {
+    let data;
+    try {
+      data = await me();
+    } catch (e) {
+      app.innerHTML = `<p class="error">Your account is unavailable right now, try again in a minute.</p>`;
+      return;
+    }
+    if (!data) {
+      app.innerHTML = `
+        <p class="note">Sign in to see your plugins, license keys and downloads.</p>
+        <p><a class="btn" href="${esc(loginUrl())}">Sign in with Discord</a></p>`;
+      return;
+    }
+    const { account, licenses } = data;
+    app.innerHTML = `
+      <div class="who">
+        ${account.avatar ? `<img src="${esc(account.avatar)}" alt="">` : ""}
+        <div><b>${esc(account.name)}</b><span class="note">Signed in with Discord</span></div>
+        <button class="btn ghost" id="logout">Sign out</button>
+      </div>
+      <h3>Your plugins</h3>
+      ${licenses.length ? licenses.map(license).join("") :
+        `<p class="note">No purchases yet. <a href="/shop/">Visit the shop</a>.</p>`}
+      <p class="note">Bought on BuiltByBit or Voxel Shop? Run <code>/verify</code> in our <a href="https://discord.gg/bHNzab9jDj">Discord</a> to get a key.</p>`;
+
+    document.getElementById("logout").onclick = async () => {
+      await post("/v1/auth/logout");
+      location.reload();
+    };
+    app.querySelectorAll("[data-copy]").forEach((b) => b.onclick = async () => {
+      await navigator.clipboard.writeText(b.dataset.copy);
+      b.textContent = "Copied";
+    });
+  }
+  main();
+</script>
+</body>
+</html>

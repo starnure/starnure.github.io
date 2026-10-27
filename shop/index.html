@@ -26,6 +26,7 @@
       <a href="/#plugins">Plugins</a>
       <a href="/shop/">Shop</a>
       <a href="/#faq">FAQ</a>
+      <a href="/account/">Account</a>
     </nav>
   </div>
 </header>
@@ -33,7 +34,7 @@
 <section>
   <div class="wrap narrow">
     <h2>Shop</h2>
-    <p class="note">Pay with PayPal or a card. Your license key and download link appear right here after payment, and a copy of the receipt goes to your PayPal email. Keep the key: support finds your purchase by it.</p>
+    <p class="note">Sign in with Discord, then pay with PayPal or a card. Your license key and download link appear right here and stay in <a href="/account/">your account</a>, so you can always find them again.</p>
     <div id="items" class="grid" style="grid-template-columns: 1fr; margin-top: 24px;">
       <p class="note">Loading...</p>
     </div>
@@ -48,8 +49,8 @@
   </div>
 </footer>
 
+<script src="/api.js"></script>
 <script>
-  const API = location.hostname === "localhost" ? "https://starnure-api.restarnure.workers.dev" : "https://api.starnure.dev";
   const PAYPAL_CLIENT_ID = "BAA57dIURIWRmkRblnAVLf-NzLwPO0x1obgJm0fHQusEAfMMPKxrz4thCH7140MUlUSH9qyUh_UGWi0ULI"; // sandbox; switch to live with PAYPAL_API
   const blurbs = {
     toxicrain: "Acid rain events, world decay, protective gear and antidotes. Spigot, Paper, Purpur 1.18 - 26.3.",
@@ -58,36 +59,26 @@
   const items = document.getElementById("items");
   const result = document.getElementById("result");
 
-  function esc(s) {
-    return String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
-  }
-
   function showKey(data) {
     result.hidden = false;
     result.innerHTML =
       `<h3>Thank you!</h3><p>Your license key:</p><code>${esc(data.key)}</code>` +
       (data.download_url ? `<p><a class="btn" href="${esc(data.download_url)}">Download the jar</a></p>` : "") +
       `<p class="note">Drop the jar into <code>plugins</code>, start the server once, put the key into ` +
-      `<code>plugins/&lt;plugin&gt;/license.yml</code> and restart. Join our <a href="https://discord.gg/bHNzab9jDj">Discord</a> for updates.</p>`;
+      `<code>plugins/&lt;plugin&gt;/license.yml</code> and restart. The key and download stay in <a href="/account/">your account</a>. ` +
+      `Join our <a href="https://discord.gg/bHNzab9jDj">Discord</a> for updates.</p>`;
     result.scrollIntoView({ behavior: "smooth" });
   }
 
   function fail(msg) {
     result.hidden = false;
-    result.innerHTML = `<p class="error">${esc(msg)}</p><p class="note">If you were charged, write to support@starnure.dev with your PayPal receipt.</p>`;
-  }
-
-  async function post(path, body) {
-    const res = await fetch(API + path, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body || {}) });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error || "Request failed");
-    return data;
+    result.innerHTML = `<p class="error">${esc(msg)}</p><p class="note">If you were charged, the key is in <a href="/account/">your account</a>. Still missing? Write to support@starnure.dev with your PayPal receipt.</p>`;
   }
 
   async function main() {
-    let products;
+    let products, user;
     try {
-      products = await fetch(API + "/v1/products").then((r) => r.json());
+      [products, user] = await Promise.all([fetch(API + "/v1/products").then((r) => r.json()), me()]);
     } catch (e) {
       items.innerHTML = `<p class="error">The shop is offline right now. You can still buy on BuiltByBit or Voxel Shop.</p>`;
       return;
@@ -97,6 +88,14 @@
         <div><h3>${esc(p.name)}</h3><p>${esc(blurbs[p.id] || "")}</p><div class="price">$${esc(p.price)}</div></div>
         <div id="pay-${esc(p.id)}"><p class="note">Payment is loading...</p></div>
       </div>`).join("");
+
+    if (!user) {
+      products.forEach((p) => {
+        document.getElementById("pay-" + p.id).innerHTML =
+          `<a class="btn" href="${esc(loginUrl())}">Sign in with Discord to buy</a>`;
+      });
+      return;
+    }
 
     const sdk = document.createElement("script");
     sdk.src = `https://www.paypal.com/sdk/js?client-id=${encodeURIComponent(PAYPAL_CLIENT_ID)}&currency=USD&intent=capture`;
