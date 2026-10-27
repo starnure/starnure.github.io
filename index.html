@@ -3,98 +3,147 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Starnure</title>
-<meta name="description" content="Starnure - Minecraft plugins for Paper & Folia, made in Ukraine.">
-<style>
-  :root {
-    --night: #1B1640;
-    --night-deep: #120F2E;
-    --gold: #FFC94A;
-    --lilac: #9D8CFF;
-    --text: #ECEAF7;
-    --muted: #A9A4C9;
-    --card: #231D52;
-  }
-  * { box-sizing: border-box; }
-  body {
-    margin: 0;
-    background: var(--night-deep);
-    color: var(--text);
-    font: 16px/1.6 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  }
-  a { color: var(--gold); }
-  .wrap { max-width: 880px; margin: 0 auto; padding: 0 16px; }
-  header { background: var(--night); border-bottom: 1px solid #2E2768; }
-  header .wrap { display: flex; align-items: center; justify-content: space-between; height: 64px; }
-  .brand { font: 700 20px/1 ui-monospace, Consolas, monospace; letter-spacing: 3px; color: var(--gold); text-decoration: none; }
-  nav a { color: var(--muted); text-decoration: none; margin-left: 20px; }
-  nav a:hover { color: var(--text); }
-  .hero { background: var(--night); padding: 72px 0 80px; }
-  .hero h1 { font-size: clamp(28px, 6vw, 44px); line-height: 1.15; margin: 0 0 16px; }
-  .hero h1 span { color: var(--gold); }
-  .hero p { color: var(--muted); font-size: 18px; margin: 0; max-width: 560px; }
-  section { padding: 56px 0; }
-  h2 { font-size: 24px; margin: 0 0 24px; }
-  .card { background: var(--card); border: 1px solid #332B78; border-radius: 12px; padding: 24px; }
-  .card h3 { margin: 0 0 8px; font-size: 20px; }
-  .card p { margin: 0 0 16px; color: var(--muted); }
-  .btn { display: inline-block; background: var(--gold); color: var(--night-deep); font-weight: 600; text-decoration: none; padding: 10px 18px; border-radius: 8px; }
-  .tags { margin: 0 0 16px; padding: 0; list-style: none; display: flex; flex-wrap: wrap; gap: 8px; }
-  .tags li { font-size: 13px; color: var(--lilac); border: 1px solid #3D3488; border-radius: 999px; padding: 2px 10px; }
-  .support li { margin-bottom: 8px; }
-  footer { border-top: 1px solid #2E2768; padding: 24px 0 40px; color: var(--muted); font-size: 14px; }
-  @media (max-width: 520px) { nav a { margin-left: 12px; } }
-</style>
+<title>Starnure - Minecraft plugins for Paper &amp; Folia</title>
+<meta name="description" content="Starnure - premium Minecraft plugins for Paper, Purpur and Folia, made in Ukraine. ToxicRain, Relics SMP and more.">
+<meta property="og:title" content="Starnure">
+<meta property="og:description" content="Minecraft plugins for Paper, Purpur and Folia, made in Ukraine.">
+<meta property="og:image" content="https://starnure.dev/img/toxicrain/cover.jpg">
+<link rel="stylesheet" href="/style.css">
 </head>
 <body>
-<header>
+<header class="top">
   <div class="wrap">
     <a class="brand" href="/">STARNURE</a>
     <nav>
       <a href="#plugins">Plugins</a>
+      <a href="/shop/">Shop</a>
+      <a href="#faq">FAQ</a>
       <a href="#support">Support</a>
-      <a href="https://github.com/starnure">GitHub</a>
     </nav>
   </div>
 </header>
 
 <div class="hero">
   <div class="wrap">
-    <h1>Minecraft plugins for <span>Paper &amp; Folia</span></h1>
-    <p>Made in Ukraine. Clean configs, fast support and regular updates for the latest versions.</p>
+    <p class="eyebrow">Plugin studio from Ukraine</p>
+    <h1>Gameplay plugins your players <span>plan their evening around</span></h1>
+    <p class="lead">Server events, survival mechanics and SMP abilities for Paper, Purpur and Folia. One jar across versions, readable configs and a real person in support.</p>
+    <div class="actions">
+      <a class="btn" href="#plugins">Browse plugins</a>
+      <a class="btn ghost" href="https://discord.gg/bHNzab9jDj">Join the Discord</a>
+    </div>
+    <ul class="stats">
+      <li><b>1.18 - 26.3</b><span>supported versions</span></li>
+      <li><b>Folia</b><span>ready</span></li>
+      <li><b>0</b><span>required dependencies</span></li>
+    </ul>
   </div>
 </div>
 
 <section id="plugins">
   <div class="wrap">
     <h2>Plugins</h2>
-    <div class="card">
-      <h3>ToxicRain</h3>
-      <p>Deadly toxic rain events that damage entities, transform blocks and push players to find shelter or protective armor.</p>
-      <ul class="tags">
-        <li>Weather events</li>
-        <li>Protective armor</li>
-        <li>Scheduler</li>
-      </ul>
-      <a class="btn" href="https://builtbybit.com/resources/toxicrain-deadly-weather-for-minecraft.60769/">Get it on BuiltByBit</a>
+    <div class="grid">
+      <article class="card product">
+        <img src="/img/toxicrain/cover.jpg" alt="ToxicRain cover" loading="lazy">
+        <div class="body">
+          <div class="head"><h3>ToxicRain</h3><span class="badge">3.0.0</span></div>
+          <p>Acid rain events that burn players caught outside, rot forests and farms, and turn hazmat suits and antidotes into the most wanted items on the server.</p>
+          <ul class="tags">
+            <li>World events</li><li>Protective gear</li><li>Antidotes</li><li>WorldGuard</li><li>PlaceholderAPI</li>
+          </ul>
+          <ul class="facts">
+            <li>Spigot, Paper, Purpur 1.18 - 26.3</li>
+            <li>Storm scheduler with countdown, titles and boss bar</li>
+            <li>15 configurable decay categories</li>
+          </ul>
+          <div class="stores">
+            <a class="btn" href="/shop/#toxicrain">Buy on starnure.dev</a>
+            <a class="btn ghost" href="https://builtbybit.com/resources/toxicrain-deadly-weather-for-minecraft.60769/">BuiltByBit</a>
+            <a class="btn ghost" href="https://voxel.shop/product/8824/toxicrain">Voxel Shop</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="card product soon">
+        <div class="placeholder"><span>Relics SMP</span></div>
+        <div class="body">
+          <div class="head"><h3>Relics SMP</h3><span class="badge lilac">In development</span></div>
+          <p>Every player carries an ancient relic with a passive and two abilities. Level it with shards, keep its energy up in PvP or watch it crack. Eight relics, Eclipse events, no client mods.</p>
+          <ul class="tags">
+            <li>SMP abilities</li><li>PvP energy</li><li>Events</li><li>Folia</li>
+          </ul>
+          <ul class="facts">
+            <li>Paper, Purpur 1.21.4 - 26.3 and Folia</li>
+            <li>English, Ukrainian, Russian, German</li>
+            <li>Clickable in-game setup</li>
+          </ul>
+          <div class="stores">
+            <a class="btn ghost" href="https://discord.gg/bHNzab9jDj">Get notified on Discord</a>
+          </div>
+        </div>
+      </article>
     </div>
   </div>
 </section>
 
-<section id="support">
+<section class="alt">
+  <div class="wrap">
+    <h2>What you get with every plugin</h2>
+    <div class="grid four">
+      <div class="point"><h3>One jar</h3><p>The same file runs on every supported version. Old and new names in configs both work.</p></div>
+      <div class="point"><h3>Light on TPS</h3><p>Work is spread over ticks with hard limits and cached checks. Folia regions are respected.</p></div>
+      <div class="point"><h3>Everything configurable</h3><p>Numbers, sounds, particles and every message. Translations ship with the plugin.</p></div>
+      <div class="point"><h3>Updates included</h3><p>Buy once, get every update for that plugin, including new Minecraft versions.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="faq">
+  <div class="wrap narrow">
+    <h2>FAQ</h2>
+    <details>
+      <summary>Where should I buy?</summary>
+      <p>Wherever you prefer. BuiltByBit, Voxel Shop and starnure.dev get the same jar and the same updates. Buying on starnure.dev directly means the full price goes to development.</p>
+    </details>
+    <details>
+      <summary>Do I need a license key?</summary>
+      <p>Yes. Start the server once, paste the key into <code>plugins/&lt;plugin&gt;/license.yml</code> and restart. Bought on BuiltByBit or Voxel Shop? Run <code>/verify</code> in our Discord to get your key. One key works on 3 servers; ask in support if you need more.</p>
+    </details>
+    <details>
+      <summary>What happens if your license server is down?</summary>
+      <p>Nothing you would notice. After the first activation the plugin keeps working offline for 7 days and checks again in the background.</p>
+    </details>
+    <details>
+      <summary>Which server software is supported?</summary>
+      <p>Each plugin lists its versions above. ToxicRain runs on Spigot, Paper and Purpur 1.18 - 26.3. Relics SMP targets Paper, Purpur 1.21.4 - 26.3 and Folia.</p>
+    </details>
+    <details>
+      <summary>Can I get a refund?</summary>
+      <p>If the plugin does not work on your server and we cannot fix it, write to support and we will refund you.</p>
+    </details>
+    <details>
+      <summary>Can you add a feature?</summary>
+      <p>Post it in the suggestions forum on Discord. Popular requests go into the next update.</p>
+    </details>
+  </div>
+</section>
+
+<section id="support" class="alt">
   <div class="wrap">
     <h2>Support</h2>
-    <ul class="support">
-      <li>Email: <a href="mailto:support@starnure.dev">support@starnure.dev</a></li>
-      <li>Discord: <a href="https://discord.gg/bHNzab9jDj">discord.gg/bHNzab9jDj</a></li>
-      <li>GitHub: <a href="https://github.com/starnure">github.com/starnure</a></li>
-    </ul>
+    <div class="grid three">
+      <a class="card contact" href="https://discord.gg/bHNzab9jDj"><h3>Discord</h3><p>Fastest way. Support forum, changelogs and sales.</p></a>
+      <a class="card contact" href="mailto:support@starnure.dev"><h3>Email</h3><p>support@starnure.dev</p></a>
+      <a class="card contact" href="https://github.com/starnure"><h3>GitHub</h3><p>github.com/starnure</p></a>
+    </div>
   </div>
 </section>
 
 <footer>
   <div class="wrap">
-    &copy; 2026 Starnure. Not affiliated with Mojang Studios or Microsoft.
+    <span>&copy; 2026 Starnure</span>
+    <span>Not affiliated with Mojang Studios or Microsoft.</span>
   </div>
 </footer>
 </body>

@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Shop - Starnure</title>
+<meta name="description" content="Buy Starnure plugins directly: instant license key and download.">
+<link rel="stylesheet" href="/style.css">
+<style>
+  .shop-item { padding: 24px; display: grid; gap: 20px; grid-template-columns: 1fr 260px; align-items: center; }
+  .shop-item h3 { margin: 0 0 6px; }
+  .shop-item p { margin: 0; color: var(--muted); }
+  .price { font-size: 28px; font-weight: 700; color: var(--gold); margin-top: 8px; }
+  .result { margin-top: 32px; padding: 24px; border: 1px solid var(--gold); border-radius: 14px; background: var(--card); }
+  .result code { display: inline-block; font-size: 18px; padding: 6px 12px; margin: 8px 0; user-select: all; }
+  .note { color: var(--muted); font-size: 15px; }
+  .error { color: #FF8A8A; }
+  @media (max-width: 640px) { .shop-item { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="/">STARNURE</a>
+    <nav>
+      <a href="/#plugins">Plugins</a>
+      <a href="/shop/">Shop</a>
+      <a href="/#faq">FAQ</a>
+    </nav>
+  </div>
+</header>
+
+<section>
+  <div class="wrap narrow">
+    <h2>Shop</h2>
+    <p class="note">Pay with PayPal or a card. Your license key and download link appear right here after payment, and a copy of the receipt goes to your PayPal email. Keep the key: support finds your purchase by it.</p>
+    <div id="items" class="grid" style="grid-template-columns: 1fr; margin-top: 24px;">
+      <p class="note">Loading...</p>
+    </div>
+    <div id="result" class="result" hidden></div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span>&copy; 2026 Starnure</span>
+    <span>Questions: <a href="mailto:support@starnure.dev">support@starnure.dev</a></span>
+  </div>
+</footer>
+
+<script>
+  const API = location.hostname === "localhost" ? "http://localhost:8787" : "https://api.starnure.dev";
+  const PAYPAL_CLIENT_ID = "PUT_PAYPAL_CLIENT_ID_HERE"; // public client id from developer.paypal.com
+  const blurbs = {
+    toxicrain: "Acid rain events, world decay, protective gear and antidotes. Spigot, Paper, Purpur 1.18 - 26.3.",
+    relicssmp: "Relics with passives and abilities, PvP energy and Eclipse events. Paper, Purpur, Folia.",
+  };
+  const items = document.getElementById("items");
+  const result = document.getElementById("result");
+
+  function esc(s) {
+    return String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  }
+
+  function showKey(data) {
+    result.hidden = false;
+    result.innerHTML =
+      `<h3>Thank you!</h3><p>Your license key:</p><code>${esc(data.key)}</code>` +
+      (data.download_url ? `<p><a class="btn" href="${esc(data.download_url)}">Download the jar</a></p>` : "") +
+      `<p class="note">Drop the jar into <code>plugins</code>, start the server once, put the key into ` +
+      `<code>plugins/&lt;plugin&gt;/license.yml</code> and restart. Join our <a href="https://discord.gg/bHNzab9jDj">Discord</a> for updates.</p>`;
+    result.scrollIntoView({ behavior: "smooth" });
+  }
+
+  function fail(msg) {
+    result.hidden = false;
+    result.innerHTML = `<p class="error">${esc(msg)}</p><p class="note">If you were charged, write to support@starnure.dev with your PayPal receipt.</p>`;
+  }
+
+  async function post(path, body) {
+    const res = await fetch(API + path, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body || {}) });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || "Request failed");
+    return data;
+  }
+
+  async function main() {
+    let products;
+    try {
+      products = await fetch(API + "/v1/products").then((r) => r.json());
+    } catch (e) {
+      items.innerHTML = `<p class="error">The shop is offline right now. You can still buy on BuiltByBit or Voxel Shop.</p>`;
+      return;
+    }
+    items.innerHTML = products.map((p) => `
+      <div class="card shop-item" id="${esc(p.id)}">
+        <div><h3>${esc(p.name)}</h3><p>${esc(blurbs[p.id] || "")}</p><div class="price">$${esc(p.price)}</div></div>
+        <div id="pay-${esc(p.id)}"><p class="note">Payment is loading...</p></div>
+      </div>`).join("");
+
+    const sdk = document.createElement("script");
+    sdk.src = `https://www.paypal.com/sdk/js?client-id=${encodeURIComponent(PAYPAL_CLIENT_ID)}&currency=USD&intent=capture`;
+    sdk.onerror = () => products.forEach((p) => {
+      document.getElementById("pay-" + p.id).innerHTML = `<p class="note">Payment is not available yet.</p>`;
+    });
+    sdk.onload = () => products.forEach((p) => {
+      paypal.Buttons({
+        style: { layout: "vertical", color: "gold", label: "pay" },
+        createOrder: () => post("/v1/orders", { product: p.id }).then((o) => o.id),
+        onApprove: (data) => post(`/v1/orders/${data.orderID}/capture`).then(showKey).catch((e) => fail(e.message)),
+        onError: (e) => fail("Payment failed: " + e),
+      }).render("#pay-" + p.id);
+    });
+    document.head.appendChild(sdk);
+    if (location.hash) document.querySelector(location.hash)?.scrollIntoView();
+  }
+  main();
+</script>
+</body>
+</html>
