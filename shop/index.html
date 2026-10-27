@@ -49,8 +49,8 @@
 </footer>
 
 <script>
-  const API = location.hostname === "localhost" ? "http://localhost:8787" : "https://api.starnure.dev";
-  const PAYPAL_CLIENT_ID = "PUT_PAYPAL_CLIENT_ID_HERE"; // public client id from developer.paypal.com
+  const API = location.hostname === "localhost" ? "https://starnure-api.restarnure.workers.dev" : "https://api.starnure.dev";
+  const PAYPAL_CLIENT_ID = "BAA57dIURIWRmkRblnAVLf-NzLwPO0x1obgJm0fHQusEAfMMPKxrz4thCH7140MUlUSH9qyUh_UGWi0ULI"; // sandbox; switch to live with PAYPAL_API
   const blurbs = {
     toxicrain: "Acid rain events, world decay, protective gear and antidotes. Spigot, Paper, Purpur 1.18 - 26.3.",
     relicssmp: "Relics with passives and abilities, PvP energy and Eclipse events. Paper, Purpur, Folia.",
@@ -104,6 +104,7 @@
       document.getElementById("pay-" + p.id).innerHTML = `<p class="note">Payment is not available yet.</p>`;
     });
     sdk.onload = () => products.forEach((p) => {
+      document.getElementById("pay-" + p.id).innerHTML = "";
       paypal.Buttons({
         style: { layout: "vertical", color: "gold", label: "pay" },
         createOrder: () => post("/v1/orders", { product: p.id }).then((o) => o.id),
