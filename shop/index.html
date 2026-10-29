@@ -84,6 +84,10 @@
       items.innerHTML = `<p class="error">The shop is offline right now. You can still buy on BuiltByBit or Voxel Shop.</p>`;
       return;
     }
+    if (!products.length) {
+      items.innerHTML = `<p class="note">Direct checkout opens soon. For now, buy on <a href="https://builtbybit.com/resources/toxicrain-deadly-weather-for-minecraft.60769/">BuiltByBit</a> or <a href="https://voxel.shop/product/8824/toxicrain">Voxel Shop</a>.</p>`;
+      return;
+    }
     items.innerHTML = products.map((p) => `
       <div class="card shop-item" id="${esc(p.id)}">
         <div><h3>${esc(p.name)}</h3><p>${esc(blurbs[p.id] || "")}</p><div class="price">$${esc(p.price)}</div></div>
